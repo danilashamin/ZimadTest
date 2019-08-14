@@ -13,14 +13,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.danilashamin.zimadtest.App;
 import ru.danilashamin.zimadtest.R;
+import ru.danilashamin.zimadtest.navigation.RouterProvider;
 import ru.danilashamin.zimadtest.screens.Screens;
 import ru.danilashamin.zimadtest.utils.Constants;
 import ru.danilashamin.zimadtest.utils.DataType;
+import ru.terrakok.cicerone.Router;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, RouterProvider {
+    @Inject
+    Router router;
 
     @BindView(R.id.bottomNavigationView)
     BottomNavigationView bottomNavigationView;
@@ -30,7 +37,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        App.INSTANCE.getInjectionManager().getAppComponent().inject(this);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        if (savedInstanceState == null) {
+            bottomNavigationView.setSelectedItemId(R.id.first_tab);
+        }
     }
 
     @Override
@@ -75,5 +86,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         transaction.commitNow();
 
         return true;
+    }
+
+    @Override
+    public Router getRouter() {
+        return router;
     }
 }

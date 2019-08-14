@@ -12,6 +12,7 @@ public interface DataFragmentContract {
     }
 
     interface Presenter extends MvpPresenter<View> {
-        void onDataElementClicked()
+        void onDataElementClicked(Response.Data data);
+        void onBackPressed();
     }
 }

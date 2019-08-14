@@ -5,20 +5,19 @@ import android.content.Context;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-import ru.danilashamin.zimadtest.di.component.AppComponent;
-import ru.danilashamin.zimadtest.di.component.DaggerAppComponent;
+import ru.danilashamin.zimadtest.di.InjectionManager;
 
 public class App extends MultiDexApplication {
     public static App INSTANCE;
 
-    private AppComponent appComponent;
+    private InjectionManager injectionManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         INSTANCE = this;
 
-        appComponent = DaggerAppComponent.builder().build();
+        injectionManager = new InjectionManager();
 
     }
 
@@ -28,7 +27,7 @@ public class App extends MultiDexApplication {
         MultiDex.install(this);
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    public InjectionManager getInjectionManager() {
+        return injectionManager;
     }
 }
