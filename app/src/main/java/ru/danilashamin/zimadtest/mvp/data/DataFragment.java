@@ -1,4 +1,4 @@
-package ru.danilashamin.zimadtest.mvp;
+package ru.danilashamin.zimadtest.mvp.data;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +23,7 @@ import ru.danilashamin.zimadtest.R;
 import ru.danilashamin.zimadtest.di.module.DataFragmentModule;
 import ru.danilashamin.zimadtest.model.Response;
 import ru.danilashamin.zimadtest.navigation.BackButtonListener;
+import ru.danilashamin.zimadtest.navigation.RouterProvider;
 import ru.danilashamin.zimadtest.ui.DataAdapter;
 import ru.danilashamin.zimadtest.utils.DataType;
 
@@ -54,7 +55,8 @@ public class DataFragment extends Fragment implements DataFragmentContract.View,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String dataType = getDataType();
-        App.INSTANCE.getInjectionManager().getDataFragmentComponent(dataType, new DataFragmentModule(dataType)).inject(this);
+        App.INSTANCE.getInjectionManager().getDataFragmentComponent(dataType, new DataFragmentModule(dataType,
+                ((RouterProvider)getParentFragment()).getRouter())).inject(this);
     }
 
     @DataType

@@ -1,4 +1,4 @@
-package ru.danilashamin.zimadtest.mvp;
+package ru.danilashamin.zimadtest.mvp.data;
 
 import java.util.List;
 

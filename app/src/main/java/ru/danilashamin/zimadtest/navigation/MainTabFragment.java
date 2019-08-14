@@ -38,6 +38,7 @@ public class MainTabFragment extends Fragment implements RouterProvider, BackBut
         return fragment;
     }
 
+
     @DataType
     private String getTabScreenType() {
         return getArguments().getString(TAB_SCREEN_TYPE);
@@ -46,8 +47,8 @@ public class MainTabFragment extends Fragment implements RouterProvider, BackBut
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         App.INSTANCE.getInjectionManager().getAppComponent().inject(this);
+        super.onCreate(savedInstanceState);
     }
 
     private Cicerone<Router> getCicerone() {

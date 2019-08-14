@@ -3,7 +3,7 @@ package ru.danilashamin.zimadtest.di.component;
 import dagger.Subcomponent;
 import ru.danilashamin.zimadtest.di.module.DataFragmentModule;
 import ru.danilashamin.zimadtest.di.scope.DataFragmentScope;
-import ru.danilashamin.zimadtest.mvp.DataFragment;
+import ru.danilashamin.zimadtest.mvp.data.DataFragment;
 
 @Subcomponent(modules = DataFragmentModule.class)
 @DataFragmentScope

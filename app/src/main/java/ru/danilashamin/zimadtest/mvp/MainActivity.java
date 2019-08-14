@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.danilashamin.zimadtest.App;
 import ru.danilashamin.zimadtest.R;
+import ru.danilashamin.zimadtest.navigation.BackButtonListener;
 import ru.danilashamin.zimadtest.navigation.RouterProvider;
 import ru.danilashamin.zimadtest.screens.Screens;
 import ru.danilashamin.zimadtest.utils.Constants;
@@ -35,9 +36,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.INSTANCE.getInjectionManager().getAppComponent().inject(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        App.INSTANCE.getInjectionManager().getAppComponent().inject(this);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.first_tab);
@@ -86,6 +87,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         transaction.commitNow();
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = null;
+        List<Fragment> fragments = fm.getFragments();
+        for (Fragment f : fragments) {
+            if (f.isVisible()) {
+                fragment = f;
+                break;
+            }
+        }
+        if (!(fragment instanceof BackButtonListener) || !((BackButtonListener) fragment).onBackPressed()) {
+            getRouter().exit();
+        }
     }
 
     @Override

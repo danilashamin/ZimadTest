@@ -5,5 +5,5 @@ public interface Constants {
     String DOG = "dog";
     String DATA_TYPE = "DATA_TYPE";
     String TAB_SCREEN_TYPE = "TAB_SCREEN_TYPE";
-
+    String DATA = "DATA";
 }
