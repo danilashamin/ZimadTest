@@ -41,6 +41,7 @@ public class DataFragment extends Fragment implements DataFragmentContract.View,
     @BindView(R.id.rvData)
     RecyclerView rvData;
 
+    private boolean mIsStateSaved;
 
     public static DataFragment newInstance(@DataType String dataType) {
         Bundle args = new Bundle();
@@ -57,6 +58,24 @@ public class DataFragment extends Fragment implements DataFragmentContract.View,
         String dataType = getDataType();
         App.INSTANCE.getInjectionManager().getDataFragmentComponent(dataType, new DataFragmentModule(dataType,
                 ((RouterProvider)getParentFragment()).getRouter())).inject(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mIsStateSaved = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIsStateSaved = false;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mIsStateSaved = true;
     }
 
     @DataType
@@ -88,15 +107,35 @@ public class DataFragment extends Fragment implements DataFragmentContract.View,
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.detachView();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.detachView();
-        if (getActivity().isFinishing() || isRemoving()) {
+        if (getActivity().isFinishing()) {
             presenter.destroy();
             App.INSTANCE.getInjectionManager().releaseDataFragmentComponent(getDataType());
+            return;
+        }
+
+
+        if (mIsStateSaved) {
+            mIsStateSaved = false;
+            return;
+        }
+
+        boolean anyParentIsRemoving = false;
+        Fragment parent = getParentFragment();
+        while (!anyParentIsRemoving && parent != null) {
+            anyParentIsRemoving = parent.isRemoving();
+            parent = parent.getParentFragment();
+        }
+
+        if (isRemoving() || anyParentIsRemoving) {
+            presenter.destroy();
+            App.INSTANCE.getInjectionManager().releaseDataFragmentComponent(getDataType());
+
         }
     }
 

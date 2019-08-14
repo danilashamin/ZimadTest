@@ -49,6 +49,7 @@ public class ElementFragment extends Fragment implements ElementFragmentContract
     }
 
     private Unbinder unbinder;
+    private boolean mIsStateSaved;
 
     @Inject
     ElementFragmentContract.Presenter presenter;
@@ -74,6 +75,24 @@ public class ElementFragment extends Fragment implements ElementFragmentContract
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mIsStateSaved = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIsStateSaved = false;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mIsStateSaved = true;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -82,10 +101,29 @@ public class ElementFragment extends Fragment implements ElementFragmentContract
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.detachView();
-        if (getActivity().isFinishing() || isRemoving()) {
+        if (getActivity().isFinishing()) {
+            presenter.destroy();
+            App.INSTANCE.getInjectionManager().releaseDataFragmentComponent(getDataType());
+            return;
+        }
+
+
+        if (mIsStateSaved) {
+            mIsStateSaved = false;
+            return;
+        }
+
+        boolean anyParentIsRemoving = false;
+        Fragment parent = getParentFragment();
+        while (!anyParentIsRemoving && parent != null) {
+            anyParentIsRemoving = parent.isRemoving();
+            parent = parent.getParentFragment();
+        }
+
+        if (isRemoving() || anyParentIsRemoving) {
             presenter.destroy();
             App.INSTANCE.getInjectionManager().releaseElementFragmentComponent(getDataType());
+
         }
     }
 
@@ -99,8 +137,7 @@ public class ElementFragment extends Fragment implements ElementFragmentContract
 
     @Override
     public void setData(Response.Data data) {
-        String number = String.valueOf(data.getTitle().charAt(data.getTitle().length() - 1));
-        tvNumber.setText(number);
+        tvNumber.setText(String.valueOf(data.getNumber()));
         tvText.setText(data.getTitle());
 
         Glide.with(ivPhoto)

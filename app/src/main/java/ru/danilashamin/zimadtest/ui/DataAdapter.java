@@ -79,13 +79,16 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataViewHolder
         }
 
         void bind(Response.Data dataElement, DataAdapterListener listener) {
-            tvNumber.setText(String.valueOf(getAdapterPosition() + 1));
+            int number = getAdapterPosition() + 1;
+            tvNumber.setText(String.valueOf(number));
             tvText.setText(dataElement.getTitle());
 
             Glide.with(ivPhoto)
                     .load(dataElement.getPhotoUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(ivPhoto);
+
+            dataElement.setNumber(number);
 
             llDataElement.setOnClickListener(v -> listener.onDataElementClicked(dataElement));
         }
