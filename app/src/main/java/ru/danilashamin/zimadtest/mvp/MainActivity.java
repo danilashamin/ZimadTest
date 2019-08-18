@@ -2,6 +2,7 @@ package ru.danilashamin.zimadtest.mvp;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.danilashamin.zimadtest.App;
 import ru.danilashamin.zimadtest.R;
+import ru.danilashamin.zimadtest.interactor.MainInteractor;
 import ru.danilashamin.zimadtest.navigation.BackButtonListener;
 import ru.danilashamin.zimadtest.navigation.RouterProvider;
 import ru.danilashamin.zimadtest.screens.Screens;
@@ -26,9 +28,12 @@ import ru.danilashamin.zimadtest.utils.Constants;
 import ru.danilashamin.zimadtest.utils.DataType;
 import ru.terrakok.cicerone.Router;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, RouterProvider {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, RouterProvider, MainInteractor.MainInteractorListener {
     @Inject
     Router router;
+
+    @Inject
+    MainInteractor mainInteractor;
 
     @BindView(R.id.bottomNavigationView)
     BottomNavigationView bottomNavigationView;
@@ -39,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         App.INSTANCE.getInjectionManager().getAppComponent().inject(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mainInteractor.subscribe(this);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.first_tab);
@@ -106,7 +112,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainInteractor.unsubscribe(this);
+    }
+
+    @Override
     public Router getRouter() {
         return router;
+    }
+
+    @Override
+    public void onElementScreenOpened() {
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onElementScreenClosed() {
+        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 }

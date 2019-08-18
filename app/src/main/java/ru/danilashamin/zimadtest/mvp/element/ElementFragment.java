@@ -57,7 +57,7 @@ public class ElementFragment extends Fragment implements ElementFragmentContract
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.INSTANCE.getInjectionManager().getElementfragmentComponent(getDataType(), new ElementFragmentModule(getData(),
+        App.INSTANCE.getInjectionManager().getElementFragmentComponent(getDataType(), new ElementFragmentModule(getData(),
                 ((RouterProvider) getParentFragment()).getRouter())).inject(this);
     }
 

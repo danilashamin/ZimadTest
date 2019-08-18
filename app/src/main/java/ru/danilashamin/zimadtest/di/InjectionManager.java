@@ -31,7 +31,7 @@ public class InjectionManager {
         return component;
     }
 
-    public ElementFragmentComponent getElementfragmentComponent(@DataType String dataType, ElementFragmentModule elementFragmentModule) {
+    public ElementFragmentComponent getElementFragmentComponent(@DataType String dataType, ElementFragmentModule elementFragmentModule) {
         ElementFragmentComponent component = elementFragmentComponentMap.get(dataType);
         if (component == null) {
             component = appComponent.elementFragmentComponentBuilder().elementFragmentModule(elementFragmentModule).build();
